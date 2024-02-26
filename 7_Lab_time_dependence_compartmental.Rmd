@@ -1,0 +1,118 @@
+---
+title: 'Lab 4: Time-dependent transitions in compartmental models'
+author: "YOUR NAME HERE"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(ggplot2)
+library(dplyr)
+```
+
+# Recap from last lab
+
+Before we think about the SIR model, which is where we started this discussion, let's think about a slightly simpler model - the SI model. Recall, this is the model we said would be appropriate for HIV, since infectious individuals remain infectious throughout their lives (assuming no ART). The differencing equations for this model would be something like:
+
+$S_{t+1}=S_t-\lambda_IS_t$
+
+$I_{t+1}=I_t+\lambda_IS_t$
+
+Write code to simulate from an SI model. You can assume the following:
+
+```{r}
+N <- 1000
+lambdaI <- 0.02
+S0 <- 999
+I0 <- 1
+```
+
+You will need to define storage for S and I before writing your for loop. Assume that we observe this process for 10 time points.
+
+```{r}
+S <- rep(NA, length(1:11))
+I <- rep(NA, length(1:11))
+
+S[1]  <- S0
+I[1]  <- I0
+for (i in 2:11){
+  S[i] <- S[i-1]-lambdaI*S[i-1]
+  I[i] <- I[i-1]+lambdaI*S[i-1]
+}
+```
+
+Combine your S and I vectors into a data frame, along with a vector for time (1:10) and use ggplot to plot these two curves (one for S and one for I). In this data frame, you will want three columns, one for time, one to denote the compartment (S or I) and one to hold the count values for each of S and I. The data frame should have 20 rows and 3 columns. (22 rows if you include time 0).
+
+
+```{r fig.align='center'}
+SI_df <- data.frame(time = rep(0:10, 2),
+                    compartment = rep(c("S", "I"), each=11),
+                    count = c(S, I))
+
+library(ggplot2)
+
+ggplot(data=SI_df, aes(x=time, y=count)) + 
+  geom_line(aes(color=compartment))
+```
+
+# Time-dependent transitions: $S \rightarrow I$
+
+Last lab, we assumed that the parameter governing transition from $S \rightarrow I$ ($\lambda_I$) did not depend on time. More specifically, we assumed that it stayed the same, regardless of the proportion of infectious individuals in the population we are studying. Common sense tells us that the chances of getting sick should go up as more people get infected in a population, since then a susceptible person is more likely to come into contact with an infectious person (and then possibly become infectious themselves). This means we would like to modify our model to make $\lambda_I$ depend on time. We are going to call this $\lambda_I(t)$, which will govern the $S \rightarrow I$ transition at time $t$ (here $t=0,1,...,10$).
+
+There are multiple ways to accomplish this task, including a differential equations-based approach (but that is not what we are going to do here - see Math 333 if you are interested in learning more about this from a differential equations perspective). **In this class, we are going to take a probabilistic approach to these models.**
+
+## $\lambda_I(t)$ as a transition probability
+
+From now on, we are going to think about $\lambda_I(t)$ as the probability of transitioning from $S \rightarrow I$ at time $t$. This probability should depend on two things: (1) contacting an infectious individual before time $t$ and (2) becoming infectious at time $t$ given contact with an infectious individual prior to time $t$. Thus, we can think of this as:
+
+$$\lambda_I(t)=P(\text{contact infectious individual before time $t$ AND become infectious at time } t)$$
+
+**How can we write this joint probability as a product of a conditional and a marginal probability?**
+
+
+
+
+
+**How do you think we should approximate the probability of coming in contact with an infectious person at time $t$?**
+
+
+
+
+**In this lab, we are going to assume that the probability of becoming infectious, given contact with an infectious person, does not change over time. Are there real life scenarios you can think of where this assumption would not be appropriate?**
+
+\newpage
+
+## Incorporating $\lambda_I(t)$ into our for loop.
+
+(a) Modify the code that you used in the last lab to simulate a deterministic result from the SI model, where the transition $S\rightarrow I$ depends on time, as we just discussed ($\lambda_I(t)$). You may assume that the probability of becoming infectious given a contact is $p^c(t)=0.02$.
+
+```{r}
+
+```
+
+(b) Combine your S and I vectors into a data frame, along with a vector for time (1:10) and use ggplot to plot these two curves (one for S and one for I). In this data frame, you will want three columns, one for time, one to denote the compartment (S or I) and one to hold the count values for each of S and I. The data frame should have 20 rows and 3 columns. (22 rows if you include time 0).
+
+```{r}
+
+```
+
+(c) Repeat (a) and (b) for different lengths of time (try more than 10 time points, like 20, 30, etc.) How do your results change? 
+
+```{r}
+
+```
+
+(d) Repeat (a) and (b) for different values of $p^c(t)=\left\{0.05, 0.10, 0.20 \right\}$. How do your results change? (Keep the number of time points the same for all different values of $p^c(t)$)
+
+```{r}
+
+```
+
+(e) In our model, we are assuming one contact (with an infectious person), on average, per time interval (like a week). Do you think this is reasonable? In what situations might this be reasonable, and in what situations would this likely be unreasonable? If you are looking for ideas, you may want to think about transmission mode.
+
+
+*Time permitting:*
+
+(f) Suppose instead we were considering a simulation for an SIR model. How would your code change? What other information would you need to carry out this simulation?
