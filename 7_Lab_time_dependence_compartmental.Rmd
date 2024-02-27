@@ -16,9 +16,9 @@ library(dplyr)
 
 Before we think about the SIR model, which is where we started this discussion, let's think about a slightly simpler model - the SI model. Recall, this is the model we said would be appropriate for HIV, since infectious individuals remain infectious throughout their lives (assuming no ART). The differencing equations for this model would be something like:
 
-$S_{t+1}=S_t-\lambda_IS_t$
+$S_{t}=S_{t-1}-\lambda_IS_{t-1}$
 
-$I_{t+1}=I_t+\lambda_IS_t$
+$I_{t}=I_{t-1}+\lambda_IS_{t-1}$
 
 Write code to simulate from an SI model. You can assume the following:
 
@@ -38,8 +38,8 @@ I <- rep(NA, length(1:11))
 S[1]  <- S0
 I[1]  <- I0
 for (i in 2:11){
-  S[i] <- S[i-1]-lambdaI*S[i-1]
-  I[i] <- I[i-1]+lambdaI*S[i-1]
+  S[t] <- S[t-1]-lambdaI*S[t-1]
+  I[t] <- I[t-1]+lambdaI*S[t-1]
 }
 ```
 
