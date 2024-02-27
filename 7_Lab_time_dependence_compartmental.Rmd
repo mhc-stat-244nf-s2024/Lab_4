@@ -79,9 +79,6 @@ $$\lambda_I(t)=P(\text{contact infectious individual before time $t$ AND become 
 
 
 
-
-**In this lab, we are going to assume that the probability of becoming infectious, given contact with an infectious person, does not change over time. Are there real life scenarios you can think of where this assumption would not be appropriate?**
-
 \newpage
 
 ## Incorporating $\lambda_I(t)$ into our for loop.
